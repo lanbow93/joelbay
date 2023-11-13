@@ -41,6 +41,6 @@ const Instrument = sequelize.define("Instrument", {
         allowNull: false
     },
 
-} )
+}, {timestamps: true} )
 
 module.exports = Instrument

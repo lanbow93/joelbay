@@ -1,7 +1,9 @@
 const express = require('express');
-const InstrumentRouter = express.Router();
+const Router = express.Router();
 const Instrument = require('../models/Instrument');
 
+router.get("/", async(request, response) => {
+    
+})
 
-
-module.exports = InstrumentRouter
+module.exports = router
