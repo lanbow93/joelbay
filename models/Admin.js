@@ -1,7 +1,7 @@
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 
-const User = sequelize.define("User", {
+const Admin = sequelize.define("Admin", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -16,8 +16,8 @@ const User = sequelize.define("User", {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-  }
+  },
 
 }, {timestamps: true});
 sequelize.sync();
-module.exports = User;
+module.exports = Admin;

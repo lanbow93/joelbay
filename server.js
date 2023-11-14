@@ -2,7 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
 const InstrumentRouter = require("./controllers/Instrument");
+const AdminRouter = require("./controllers/Admin");
 
 const app = express();
 
@@ -13,6 +15,8 @@ app.get("/", (request, response) => {
 app.use(cors({}))
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(cookieParser());
+app.use("/admin", AdminRouter);
 app.use("/instruments", InstrumentRouter);
 
 PORT = 7777

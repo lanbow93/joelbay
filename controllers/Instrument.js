@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Instrument = require('../models/Instrument');
-
+const adminAuth = require("../middleware/adminAuth")
 // Get all instruments
 router.get("/", async(request, response) => {
     try {
@@ -17,7 +17,7 @@ router.get("/", async(request, response) => {
 })
 
 // Delete specific item
-router.delete("/:id", async(request, response) => {
+router.delete("/:id", adminAuth, async(request, response) => {
     try {
         const deletedRows = await Instrument.destroy({where:{id: request.params.id}}, {force: true});
         response.status(200).json({message: "Successful Deletion", data: deletedRows});
@@ -27,7 +27,7 @@ router.delete("/:id", async(request, response) => {
 })
 
 // Creates a new instrument
-router.post("/", async(request, response) => {
+router.post("/", adminAuth, async(request, response) => {
     try{
         const newInstrument = await Instrument.create({
             name: request.body.name,
@@ -51,7 +51,7 @@ router.post("/", async(request, response) => {
 })
 
 // Updates an instrument
-router.put("/:id", async (request, response) => {
+router.put("/:id", adminAuth,  async (request, response) => {
     try {
         const newInstrument = await Instrument.update(
             {
