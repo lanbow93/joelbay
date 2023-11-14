@@ -13,7 +13,7 @@ app.get("/", (request, response) => {
 app.use(cors({}))
 app.use(express.json());
 app.use(morgan("tiny"));
-app.use("/instrument", InstrumentRouter);
+app.use("/instruments", InstrumentRouter);
 
 PORT = 7777
 app.listen(PORT, () => {
