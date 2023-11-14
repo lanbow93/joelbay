@@ -43,4 +43,5 @@ const Instrument = sequelize.define("Instrument", {
 
 }, {timestamps: true} )
 
+sequelize.sync();
 module.exports = Instrument
