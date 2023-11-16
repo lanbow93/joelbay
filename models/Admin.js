@@ -19,5 +19,5 @@ const Admin = sequelize.define("Admin", {
   },
 
 }, {timestamps: true});
-sequelize.sync();
+
 module.exports = Admin;

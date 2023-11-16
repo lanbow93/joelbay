@@ -8,16 +8,16 @@ const AdminRouter = require("./controllers/Admin");
 
 const app = express();
 
-app.get("/", (request, response) => {
-    response.send("Server is functional");
-})
-
 app.use(cors({}))
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cookieParser());
 app.use("/admin", AdminRouter);
 app.use("/instruments", InstrumentRouter);
+
+app.get("/", (request, response) => {
+    response.send("Server is functional");
+})
 
 PORT = 7777
 app.listen(PORT, () => {

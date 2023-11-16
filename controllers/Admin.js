@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const Admin = "../models/Admin";
+const Admin = require("../models/Admin");
 
 // Admin Signup Post
 router.post("/signup", async (request, response) => {
@@ -11,10 +11,10 @@ router.post("/signup", async (request, response) => {
         request.body.password = await bcrypt.hash(request.body.password, await bcrypt.genSalt(10))
 
         // Generate user
-        const user = await Admin.create({username: request.body.username, password: request.body.password})
+        const admin = await Admin.create({username: request.body.username, password: request.body.password})
 
         // Response
-        response.json({status: "Admin Created", username: user})
+        response.json({status: "Admin Created", username: admin})
     } catch (error) {
         response.status(400).json(error)
     }
