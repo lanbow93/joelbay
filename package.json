@@ -23,5 +23,12 @@
     "postgres": "^3.4.3",
     "sequelize": "^6.35.0",
     "sqlite3": "^5.1.6"
+  },
+  "engines": {
+    "node": "16.17.0",
+    "npm": "9.5.0"   
+  },
+  "pnpm": {
+    "version": "8.10.4"  
   }
 }
