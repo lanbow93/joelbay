@@ -4,21 +4,21 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const Admin = require("../models/Admin");
 
-// Admin Signup Post
-router.post("/signup", async (request, response) => {
-    try{
-        // Hash password
-        request.body.password = await bcrypt.hash(request.body.password, await bcrypt.genSalt(10))
+// // Admin Signup Post
+// router.post("/signup", async (request, response) => {
+//     try{
+//         // Hash password
+//         request.body.password = await bcrypt.hash(request.body.password, await bcrypt.genSalt(10))
 
-        // Generate user
-        const admin = await Admin.create({username: request.body.username, password: request.body.password})
+//         // Generate user
+//         const admin = await Admin.create({username: request.body.username, password: request.body.password})
 
-        // Response
-        response.json({status: "Admin Created", username: admin})
-    } catch (error) {
-        response.status(400).json(error)
-    }
-})
+//         // Response
+//         response.json({status: "Admin Created", username: admin})
+//     } catch (error) {
+//         response.status(400).json(error)
+//     }
+// })
 
 // Admin Login Post
 router.post("/login", async (request, response) => {
