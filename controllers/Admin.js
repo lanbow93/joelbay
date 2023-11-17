@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const Admin = require("../models/Admin");
+const {successfulRequest, failedRequest} = require("../utils/SharedFunctions")
 
 // // Admin Signup Post
 // router.post("/signup", async (request, response) => {
@@ -38,13 +39,13 @@ router.post("/login", async (request, response) => {
                     sameSite: "none",
                     secure: request.hostname === "locahhost" ? false : true,}).json({payload, status: "logged in"})
             } else {
-                response.status(400).json({error: "Password does not match"})
+                failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Password/Username")
             }
         } else {
-            response.status(400).json({error: "Admin does not exist"})
+            failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Username/Password");
         }
     } catch(error) {
-        response.status(400).json(error)
+        failedRequest(response, "Failed To Login", "Username/Password Does Not Match", error);
     }
 
 }) 
