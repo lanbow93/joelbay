@@ -7,10 +7,11 @@ const InstrumentRouter = require("./controllers/Instrument");
 const AdminRouter = require("./controllers/Admin");
 
 const app = express();
-const corsOptions = {
-    origin: 'http://127.0.0.1:5173'
-  };
-app.use(cors(corsOptions))
+
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    credentials: true
+}))
 app.use(express.json());
 app.use(morgan("tiny"));
 app.use(cookieParser());
