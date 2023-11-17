@@ -14,4 +14,4 @@ function failedRequest(response, status, message, error){
     })
 }
 
-module.exports = successfulRequest, failedRequest
+module.exports = {successfulRequest, failedRequest}
