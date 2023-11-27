@@ -9,6 +9,7 @@ const {failedRequest} = require("../utils/SharedFunctions.js")
 // router.post("/signup", async (request, response) => {
 //     try{
 //         // Hash password
+//         request.body.username = await request.body.username.toLowerCase();
 //         request.body.password = await bcrypt.hash(request.body.password, await bcrypt.genSalt(10))
 
 //         // Generate user
@@ -24,20 +25,29 @@ const {failedRequest} = require("../utils/SharedFunctions.js")
 // Admin Login Post
 router.post("/login", async (request, response) => {
     try {
+        request.body.username = await request.body.username.toLowerCase();
         const {username, password} = request.body
         //Check for user
-        const user = await Admin.findOne({username: username})
+        const user = await Admin.findOne({
+            where: {
+            username: username
+            }
+        })
 
         if (user){
             const passwordCheck = await bcrypt.compare(password, user.password)
             if(passwordCheck) {
                 const payload = {username}
                 const token = await jwt.sign(payload, process.env.SECRET)
+
+                const isLocalhost = request.hostname === 'localhost' || request.hostname === '127.0.0.1';
+                const shouldSetSecure = isLocalhost ? false : request.protocol === 'https';
+
                 response.cookie("token", token, {
                     httpOnly: true,
                     path: "/",
                     sameSite: "none",
-                    secure: request.hostname === "localhost" ? false : true,}).json({payload, status: "logged in"})
+                    secure: shouldSetSecure,}).json({payload, status: "logged in"})
             } else {
                 failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Password/Username")
             }
@@ -45,7 +55,9 @@ router.post("/login", async (request, response) => {
             failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Username/Password");
         }
     } catch(error) {
+        console.log(error)
         failedRequest(response, "Failed To Login", "Username/Password Does Not Match", error);
+    
     }
 
 }) 
