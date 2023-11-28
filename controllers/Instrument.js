@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Instrument = require('../models/Instrument');
-const adminAuth = require("../middleware/adminAuth")
+const AdminAuth = require("../middleware/adminAuth");
+require('dotenv').config();
 // Get all instruments
 router.get("/", async(request, response) => {
     try {
@@ -27,7 +28,7 @@ router.delete("/:id", adminAuth, async(request, response) => {
 })
 
 // Creates a new instrument
-router.post("/", adminAuth, async (request, response) => {
+router.post("/", AdminAuth, async (request, response) => {
     try {
       // Assuming request.body.image is a File object (uploaded file)
       const image = request.body.image;
@@ -66,7 +67,7 @@ router.post("/", adminAuth, async (request, response) => {
   // Function to upload an image to Imgur
   async function uploadImageToImgur(image) {
     const imgurApiUrl = 'https://api.imgur.com/3/image';
-    const imgurClientId = 'YOUR_IMGUR_CLIENT_ID'; // Replace with your Imgur client ID
+    const imgurClientId = process.env.CLIENTID; // Replace with your Imgur client ID
   
     const formData = new FormData();
     formData.append('image', image);
