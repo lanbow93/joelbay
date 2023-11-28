@@ -1,5 +1,7 @@
-const jwt = require("jsonwebtoken");
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
+import jwt from "jsonwebtoken";
+
 
 async function AdminAuth  (request, response, next){
     try {
@@ -18,5 +20,4 @@ async function AdminAuth  (request, response, next){
         response.status(400).json({error});
     }
 }
-
-module.exports = AdminAuth;
+export default AdminAuth;

@@ -1,5 +1,5 @@
-const sequelize = require("../config/database");
-const {DataTypes} = require("sequelize");
+import sequelize from "../config/database.js";
+import {DataTypes} from "sequelize";
 
 const Instrument = sequelize.define("Instrument", {
     id: {
@@ -43,4 +43,4 @@ const Instrument = sequelize.define("Instrument", {
 
 }, {timestamps: true} )
 
-module.exports = Instrument
+export default Instrument

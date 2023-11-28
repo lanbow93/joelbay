@@ -1,10 +1,12 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
-const InstrumentRouter = require("./controllers/Instrument");
-const AdminRouter = require("./controllers/Admin");
+import dotenv from 'dotenv';
+dotenv.config();
+
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import InstrumentRouter from './controllers/Instrument.js';
+import AdminRouter from './controllers/Admin.js';
 
 const app = express();
 
@@ -22,7 +24,7 @@ app.get("/", (request, response) => {
     response.send("Server is functional");
 })
 
-PORT = 7777
+const PORT = 7777
 app.listen(PORT, () => {
     console.log(`Listening on port: ${PORT}`)
 })

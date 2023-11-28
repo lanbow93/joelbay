@@ -1,8 +1,11 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const Instrument = require('../models/Instrument');
-const AdminAuth = require("../middleware/adminAuth");
-require('dotenv').config();
+import Instrument from '../models/Instrument.js';
+import fetch from 'node-fetch';
+import adminAuth from '../middleware/adminAuth.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 // Get all instruments
 router.get("/", async(request, response) => {
     try {
@@ -18,7 +21,7 @@ router.get("/", async(request, response) => {
 })
 
 // Delete specific item
-router.delete("/:id", AdminAuth, async(request, response) => {
+router.delete("/:id", async(request, response) => {
     try {
         const deletedRows = await Instrument.destroy({where:{id: request.params.id}}, {force: true});
         response.status(200).json({message: "Successful Deletion", data: deletedRows});
@@ -28,16 +31,18 @@ router.delete("/:id", AdminAuth, async(request, response) => {
 })
 
 // Creates a new instrument
-router.post("/", AdminAuth, async (request, response) => {
+router.post("/", async (request, response) => {
+  
     try {
       // Assuming request.body.image is a File object (uploaded file)
       const image = request.body.image;
   
       // Upload image to Imgur
       const imgurApiResponse = await uploadImageToImgur(image);
+      console.log(imgurApiResponse)
   
       // Check if Imgur upload was successful
-      console.log(imgurApiResponse)
+      
       if (imgurApiResponse && imgurApiResponse.data && imgurApiResponse.data.link) {
         // Update the database with the Imgur image link
         const newInstrument = await Instrument.create({
@@ -68,23 +73,24 @@ router.post("/", AdminAuth, async (request, response) => {
   async function uploadImageToImgur(image) {
     const imgurApiUrl = 'https://api.imgur.com/3/image';
     const imgurClientId = process.env.CLIENTID; // Replace with your Imgur client ID
-  
-    const formData = new FormData();
-    formData.append('image', image);
-  
-    const response = await fetch(imgurApiUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Client-ID ${imgurClientId}`,
-      },
+
+    try{
+      const response = await fetch(imgurApiUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Client-ID ${imgurClientId}`,
+        },
       body: formData,
     });
-  
     return response.json();
+  } catch(error){
+      return error
+    }
   }
 
+
 // Updates an instrument
-router.put("/:id", AdminAuth,  async (request, response) => {
+router.put("/:id",  async (request, response) => {
     try {
         const newInstrument = await Instrument.update(
             {
@@ -110,4 +116,4 @@ router.put("/:id", AdminAuth,  async (request, response) => {
     }
 })
 
-module.exports = router;
+export default router

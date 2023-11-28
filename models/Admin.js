@@ -1,5 +1,5 @@
-const sequelize = require("../config/database");
-const { DataTypes } = require("sequelize");
+import sequelize from "../config/database.js";
+import { DataTypes } from "sequelize";
 
 const Admin = sequelize.define("Admin", {
   id: {
@@ -20,4 +20,4 @@ const Admin = sequelize.define("Admin", {
 
 }, {timestamps: true});
 
-module.exports = Admin;
+export default Admin;

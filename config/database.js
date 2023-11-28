@@ -1,6 +1,6 @@
-const { Sequelize } = require('sequelize');
-const dotenv = require('dotenv');
+import { Sequelize } from 'sequelize';
 
+import dotenv from 'dotenv';
 dotenv.config();
 
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT, ENDPOINT_ID } = process.env;
@@ -36,4 +36,4 @@ sequelize
     console.error('Unable to connect to PostgreSQL:', error);
   });
 
-module.exports = sequelize;
+export default sequelize;
