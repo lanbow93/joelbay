@@ -18,7 +18,7 @@ router.get("/", async(request, response) => {
 })
 
 // Delete specific item
-router.delete("/:id", adminAuth, async(request, response) => {
+router.delete("/:id", AdminAuth, async(request, response) => {
     try {
         const deletedRows = await Instrument.destroy({where:{id: request.params.id}}, {force: true});
         response.status(200).json({message: "Successful Deletion", data: deletedRows});
