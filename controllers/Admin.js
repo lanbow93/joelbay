@@ -39,15 +39,11 @@ router.post("/login", async (request, response) => {
             if(passwordCheck) {
                 const payload = {username}
                 const token = await jwt.sign(payload, process.env.SECRET)
-
-                const isLocalhost = request.hostname === 'localhost' || request.hostname === '127.0.0.1';
-                const shouldSetSecure = isLocalhost ? false : request.protocol === 'https';
-
                 response.cookie("token", token, {
                     httpOnly: true,
                     path: "/",
                     sameSite: "none",
-                    secure: shouldSetSecure,}).json({payload, status: "logged in"})
+                    secure: request.hostname === "localhost" ? false : true }).json({payload, status: "logged in"})
             } else {
                 failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Password/Username")
             }
