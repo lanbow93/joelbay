@@ -84,7 +84,7 @@ router.post("/", AdminAuth, async (request, response) => {
   }
 
 // Updates an instrument
-router.put("/:id", adminAuth,  async (request, response) => {
+router.put("/:id", AdminAuth,  async (request, response) => {
     try {
         const newInstrument = await Instrument.update(
             {
