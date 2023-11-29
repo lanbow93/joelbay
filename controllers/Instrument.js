@@ -24,7 +24,7 @@ router.get("/", async(request, response) => {
 })
 
 // Delete specific item
-router.delete("/:id", async(request, response) => {
+router.delete("/:id", adminAuth, async(request, response) => {
     try {
         const deletedRows = await Instrument.destroy({where:{id: request.params.id}}, {force: true});
         response.status(200).json({message: "Successful Deletion", data: deletedRows});
@@ -34,7 +34,7 @@ router.delete("/:id", async(request, response) => {
 })
 
 // Creates a new instrument with multer middleware for handling file upload
-router.post("/", upload.single('image'), async (request, response) => {
+router.post("/", upload.single('image'), adminAuth, async (request, response) => {
   try {
     // Assuming request.file is the uploaded file
     const image = request.file;
