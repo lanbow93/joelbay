@@ -1,9 +1,11 @@
-const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-const Admin = require("../models/Admin");
-const {failedRequest} = require("../utils/SharedFunctions.js")
+import express from 'express';
+const router = express.Router();
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
+import dotenv from 'dotenv';
+dotenv.config();
+import Admin from '../models/Admin.js';
+import { failedRequest } from '../utils/SharedFunctions.js';
 
 // // Admin Signup Post
 // router.post("/signup", async (request, response) => {
@@ -63,4 +65,4 @@ router.post("/logout", async (request, response) => {
     response.clearCookie("token").json({response: "You are Logged Out"})
 })
 
-module.exports = router
+export default router
