@@ -42,7 +42,7 @@ router.post("/", upload.single('image'), adminAuth, async (request, response) =>
 
     // Upload image to Imgur
     const imgurApiResponse = await uploadImageToImgur(image.buffer);
-    console.log(imgurApiResponse);
+    
 
     // Check if Imgur upload was successful
     if (imgurApiResponse && imgurApiResponse.data && imgurApiResponse.data.link) {
@@ -67,7 +67,7 @@ router.post("/", upload.single('image'), adminAuth, async (request, response) =>
       response.status(400).json({ error: "Imgur image upload failed", data: imgurApiResponse });
     }
   } catch (error) {
-    console.log(error);
+
     response.status(400).json(error);
   }
 });
@@ -91,11 +91,10 @@ router.post("/", upload.single('image'), adminAuth, async (request, response) =>
       return response.json();
     } else {
       const errorResponse = await response.json(); // Attempt to parse error response as JSON
-      console.error('Imgur API Error:', errorResponse);
+
       return { error: 'Imgur API Error', data: errorResponse };
     }
   } catch (error) {
-    console.error('Error during Imgur API request:', error);
     return { error: 'Imgur API Request Error', data: null };
   }
 }
