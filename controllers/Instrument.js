@@ -23,6 +23,7 @@ router.get("/", async(request, response) => {
     }
 })
 
+
 // Delete specific item
 router.delete("/:id", adminAuth, async(request, response) => {
     try {
@@ -125,6 +126,15 @@ router.put("/:id",  async (request, response) => {
     } catch (error) {
         response.status(400).json(error);
     }
+})
+
+// Show information
+router.get("/:id", async (request, response) => {
+  try{
+    const Instrument = await Instrument.findOne({where: {id: request.params.id}});
+  } catch(error){
+    response.status(400).json(error);
+  }
 })
 
 export default router
