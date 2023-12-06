@@ -102,7 +102,7 @@ router.post("/", upload.single('image'), adminAuth, async (request, response) =>
 
 
 // Updates an instrument
-router.put("/:id",  async (request, response) => {
+router.put("/:id",  adminAuth, async (request, response) => {
     try {
         const newInstrument = await Instrument.update(
             {
