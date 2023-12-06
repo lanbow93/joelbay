@@ -1,13 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
-
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import InstrumentRouter from './controllers/Instrument.js';
 import AdminRouter from './controllers/Admin.js';
-
+import ContactRouter from './controllers/Contact.js'
 const app = express();
 
 app.use(cors({
@@ -19,6 +18,7 @@ app.use(morgan("common"));
 app.use(cookieParser());
 app.use("/admin", AdminRouter);
 app.use("/instruments", InstrumentRouter);
+app.use("/contact", ContactRouter);
 
 app.get("/", (request, response) => {
     response.send("Server is functional");

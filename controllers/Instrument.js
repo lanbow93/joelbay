@@ -131,7 +131,8 @@ router.put("/:id",  async (request, response) => {
 // Show information
 router.get("/:id", async (request, response) => {
   try{
-    const Instrument = await Instrument.findOne({where: {id: request.params.id}});
+    const instrument = await Instrument.findAll({where: {id: request.params.id}});
+    response.status(200).json(instrument)
   } catch(error){
     response.status(400).json(error);
   }
