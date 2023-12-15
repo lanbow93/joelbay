@@ -16,9 +16,9 @@ const Instrument = sequelize.define("Instrument", {
         type: DataTypes.STRING(500),
         defaultValue: "No Description"
     },
-    imageUrl:{
-        type: DataTypes.STRING,
-        allowNull: false
+    imageUrls:{
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: false,
     },
     price:{
         type: DataTypes.DECIMAL(5, 2),

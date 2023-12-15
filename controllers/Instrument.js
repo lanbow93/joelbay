@@ -35,41 +35,50 @@ router.delete("/:id", adminAuth, async(request, response) => {
 })
 
 // Creates a new instrument with multer middleware for handling file upload
-router.post("/", upload.single('image'), adminAuth, async (request, response) => {
+router.post("/", upload.any(), adminAuth, async (request, response) => {
   try {
-    // Assuming request.file is the uploaded file
-    const image = request.file;
-    
+    // Assuming request.files is an array of uploaded files
+    console.log("Received Data:", request.body);
+    const images = request.files;
+    // Check if there are any uploaded images
+    if (!images || images.length === 0) {
+      return response.status(400).json({ error: "No images uploaded" });
+    }
 
-    // Upload image to Imgur
-    const imgurApiResponse = await uploadImageToImgur(image.buffer);
-    
+    const imgurUploadPromises = images.map(async (image) => {
+      // Upload each image to Imgur
+      const imgurApiResponse = await uploadImageToImgur(image.buffer);
 
-    // Check if Imgur upload was successful
-    if (imgurApiResponse && imgurApiResponse.data && imgurApiResponse.data.link) {
-      // Update the database with the Imgur image link
-      const newInstrument = await Instrument.create({
-        name: request.body.name,
-        description: request.body.description,
-        imageUrl: imgurApiResponse.data.link , // Update image to Imgur link
-        price: request.body.price,
-        quantityAvailable: request.body.quantityAvailable,
-        brand: request.body.brand,
-        category: request.body.category,
-        condition: request.body.condition,
-      });
-
-      if (newInstrument) {
-        response.status(200).json(newInstrument);
+      // Check if Imgur upload was successful for each image
+      if (imgurApiResponse && imgurApiResponse.data && imgurApiResponse.data.link) {
+        return imgurApiResponse.data.link;
       } else {
-        response.status(400).json({ error: "Unable to create record", data: newInstrument });
+        throw new Error("Imgur image upload failed");
       }
+    });
+
+    // Wait for all Imgur uploads to complete
+    const imgurLinks = await Promise.all(imgurUploadPromises);
+
+    // Update the database with the Imgur image links
+    const newInstrument = await Instrument.create({
+      name: request.body.name,
+      description: request.body.description,
+      imageUrls: imgurLinks, // Update images to Imgur links
+      price: request.body.price,
+      quantityAvailable: request.body.quantityAvailable,
+      brand: request.body.brand,
+      category: request.body.category,
+      condition: request.body.condition,
+    });
+
+    if (newInstrument) {
+      response.status(200).json(newInstrument);
     } else {
-      response.status(400).json({ error: "Imgur image upload failed", data: imgurApiResponse });
+      response.status(400).json({ error: "Unable to create record", data: newInstrument });
     }
   } catch (error) {
-
-    response.status(400).json(error);
+    response.status(400).json({ error: error.message });
   }
 });
   
