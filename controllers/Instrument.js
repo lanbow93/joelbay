@@ -110,32 +110,71 @@ router.post("/", upload.any(), adminAuth, async (request, response) => {
 }
 
 
-// Updates an instrument
-router.put("/:id",  adminAuth, async (request, response) => {
-    try {
-        const newInstrument = await Instrument.update(
-            {
-            name: request.body.name,
-            description: request.body.description,
-            imageUrl: request.body.imageUrl,
-            price: request.body.price,
-            quantityAvailable: request.body.quantityAvailable,
-            brand: request.body.brand,
-            category: request.body.category,
-            condition: request.body.condition
-            },
-            {where: {id: request.params.id}}
-        )
-        if(newInstrument){
-            response.status(200).json(newInstrument);
-        }else{
-            response.status(400).json({error: "Failed To Update Instrument", data: newInstrument})
-        }
-    
-    } catch (error) {
-        response.status(400).json(error);
+// Update route for an existing instrument
+router.put("/:instrumentId", upload.any(), adminAuth, async (request, response) => {
+  try {
+    const instrumentId = request.params.instrumentId;
+    const existingInstrument = await Instrument.findByPk(instrumentId);
+
+    if (!existingInstrument) {
+      return response.status(404).json({ error: "Instrument not found" });
     }
-})
+
+    // Assuming request.files is an array of uploaded files
+    const newImages = request.files;
+
+    // Check if there are any uploaded images
+    if (newImages && newImages.length > 0) {
+      const imgurUploadPromises = newImages.map(async (image) => {
+        // Upload each new image to Imgur
+        const imgurApiResponse = await uploadImageToImgur(image.buffer);
+
+        // Check if Imgur upload was successful for each new image
+        if (imgurApiResponse && imgurApiResponse.data && imgurApiResponse.data.link) {
+          return imgurApiResponse.data.link;
+        } else {
+          throw new Error("Imgur image upload failed");
+        }
+      });
+
+      // Wait for all Imgur uploads to complete
+      const newImgurLinks = await Promise.all(imgurUploadPromises);
+
+      // Combine the existing image URLs with the new Imgur links
+      const updatedImageUrls = [...existingInstrument.imageUrls, ...newImgurLinks];
+      
+      // Update the database with the combined image links and other details
+      const updatedInstrument = await existingInstrument.update({
+        name: request.body.name || existingInstrument.name,
+        description: request.body.description || existingInstrument.description,
+        imageUrls: updatedImageUrls,
+        price: request.body.price || existingInstrument.price,
+        quantityAvailable: request.body.quantityAvailable || existingInstrument.quantityAvailable,
+        brand: request.body.brand || existingInstrument.brand,
+        category: request.body.category || existingInstrument.category,
+        condition: request.body.condition || existingInstrument.condition,
+      });
+
+      response.status(200).json(updatedInstrument);
+    } else {
+      // No new images, update only other details
+      const updatedInstrument = await existingInstrument.update({
+        name: request.body.name || existingInstrument.name,
+        description: request.body.description || existingInstrument.description,
+        price: request.body.price || existingInstrument.price,
+        quantityAvailable: request.body.quantityAvailable || existingInstrument.quantityAvailable,
+        brand: request.body.brand || existingInstrument.brand,
+        category: request.body.category || existingInstrument.category,
+        condition: request.body.condition || existingInstrument.condition,
+      });
+
+      response.status(200).json(updatedInstrument);
+    }
+  } catch (error) {
+    response.status(400).json({ error: error.message });
+  }
+});
+
 
 // Show information
 router.get("/:id", async (request, response) => {
