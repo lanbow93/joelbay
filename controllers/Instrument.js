@@ -7,17 +7,24 @@ import Instrument from '../models/Instrument.js';
 import fetch from 'node-fetch';
 import adminAuth from '../middleware/adminAuth.js';
 import dotenv from 'dotenv';
+import { Sequelize } from 'sequelize';
 
 dotenv.config();
 // Get all instruments
 router.get("/", async(request, response) => {
+  console.log(request.query)
     try {
+      if(request.query.discount){
+        const Instruments = await Instrument.findAll({where: {discount: {[Sequelize.Op.not]: 0}}});
+        response.status(200).json(Instruments)
+      }else {
         const Instruments = await Instrument.findAll({});
         if(Instruments){
             response.status(200).json(Instruments);
         } else {
             response.status(400).json({error: "Unable To Find Any Entries"});
         }
+      }
     } catch (error) {
         response.status(400).json(error);
     }
@@ -70,6 +77,7 @@ router.post("/", upload.any(), adminAuth, async (request, response) => {
       brand: request.body.brand,
       category: request.body.category,
       condition: request.body.condition,
+      discount: 0
     });
 
     if (newInstrument) {
@@ -111,7 +119,7 @@ router.post("/", upload.any(), adminAuth, async (request, response) => {
 
 
 // Update route for an existing instrument
-router.put("/:instrumentId", upload.any(), adminAuth, async (request, response) => {
+router.put("/:instrumentId", upload.any(), async (request, response) => {
   try {
     const instrumentId = request.params.instrumentId;
     const existingInstrument = await Instrument.findByPk(instrumentId);
@@ -153,6 +161,7 @@ router.put("/:instrumentId", upload.any(), adminAuth, async (request, response) 
         brand: request.body.brand || existingInstrument.brand,
         category: request.body.category || existingInstrument.category,
         condition: request.body.condition || existingInstrument.condition,
+        discount: request.body.discount || existingInstrument.discount,
       });
 
       response.status(200).json(updatedInstrument);
@@ -166,6 +175,7 @@ router.put("/:instrumentId", upload.any(), adminAuth, async (request, response) 
         brand: request.body.brand || existingInstrument.brand,
         category: request.body.category || existingInstrument.category,
         condition: request.body.condition || existingInstrument.condition,
+        discount: request.body.discount || existingInstrument.discount,
       });
 
       response.status(200).json(updatedInstrument);
@@ -181,6 +191,8 @@ router.get("/:id", async (request, response) => {
   try{
     const instrument = await Instrument.findAll({where: {id: request.params.id}});
     response.status(200).json(instrument)
+    
+    
   } catch(error){
     response.status(400).json(error);
   }

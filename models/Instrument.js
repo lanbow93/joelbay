@@ -24,6 +24,10 @@ const Instrument = sequelize.define("Instrument", {
         type: DataTypes.DECIMAL(5, 2),
         defaultValue: 50.00
     },
+    discount:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
     quantityAvailable:{
         type: DataTypes.INTEGER,
         defaultValue: 1
