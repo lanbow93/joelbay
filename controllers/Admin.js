@@ -1,11 +1,11 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 dotenv.config();
-import Admin from '../models/Admin.js';
-import { failedRequest } from '../utils/SharedFunctions.js';
+import Admin from "../models/Admin.js";
+import { failedRequest } from "../utils/SharedFunctions.js";
 
 // // Admin Signup Post
 // router.post("/signup", async (request, response) => {
@@ -26,43 +26,59 @@ import { failedRequest } from '../utils/SharedFunctions.js';
 
 // Admin Login Post
 router.post("/login", async (request, response) => {
-    try {
-        request.body.username = await request.body.username.toLowerCase();
-        const {username, password} = request.body
-        //Check for user
-        const user = await Admin.findOne({
-            where: {
-            username: username
-            }
-        })
+  try {
+    request.body.username = await request.body.username.toLowerCase();
+    const { username, password } = request.body;
+    //Check for user
+    const user = await Admin.findOne({
+      where: {
+        username: username,
+      },
+    });
 
-        if (user){
-            const passwordCheck = await bcrypt.compare(password, user.password)
-            if(passwordCheck) {
-                const payload = {username}
-                const token = await jwt.sign(payload, process.env.SECRET)
-                response.cookie("token", token, {
-                    httpOnly: true,
-                    path: "/",
-                    sameSite: "none",
-                    secure: request.hostname === "localhost" ? false : true }).json({payload, status: "logged in"})
-            } else {
-                failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Password/Username")
-            }
-        } else {
-            failedRequest(response, "Failed To Login", "Username/Password Does Not Match", "Incorrect Username/Password");
-        }
-    } catch(error) {
-        console.log(error)
-        failedRequest(response, "Failed To Login", "Username/Password Does Not Match", error);
-    
+    if (user) {
+      const passwordCheck = await bcrypt.compare(password, user.password);
+      if (passwordCheck) {
+        const payload = { username };
+        const token = await jwt.sign(payload, process.env.SECRET);
+        response
+          .cookie("token", token, {
+            httpOnly: true,
+            path: "/",
+            sameSite: "none",
+            secure: request.hostname === "localhost" ? false : true,
+          })
+          .json({ payload, status: "logged in" });
+      } else {
+        failedRequest(
+          response,
+          "Failed To Login",
+          "Username/Password Does Not Match",
+          "Incorrect Password/Username",
+        );
+      }
+    } else {
+      failedRequest(
+        response,
+        "Failed To Login",
+        "Username/Password Does Not Match",
+        "Incorrect Username/Password",
+      );
     }
-
-}) 
+  } catch (error) {
+    console.log(error);
+    failedRequest(
+      response,
+      "Failed To Login",
+      "Username/Password Does Not Match",
+      error,
+    );
+  }
+});
 
 // Admin Logout Post
 router.post("/logout", async (request, response) => {
-    response.clearCookie("token").json({response: "You are Logged Out"})
-})
+  response.clearCookie("token").json({ response: "You are Logged Out" });
+});
 
-export default router
+export default router;
