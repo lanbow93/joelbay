@@ -12,7 +12,6 @@ import { Sequelize } from "sequelize";
 dotenv.config();
 // Get all Listings
 router.get("/", async (request, response) => {
-  console.log(request.query);
   try {
     if (request.query.discount) {
       const Listings = await Listing.findAll({
@@ -50,8 +49,6 @@ router.delete("/:id", adminAuth, async (request, response) => {
 // Creates a new Listing with multer middleware for handling file upload
 router.post("/", upload.any(), adminAuth, async (request, response) => {
   try {
-    // Assuming request.files is an array of uploaded files
-    console.log("Received Data:", request.body);
     const images = request.files;
     // Check if there are any uploaded images
     if (!images || images.length === 0) {

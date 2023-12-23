@@ -66,7 +66,6 @@ router.post("/login", async (request, response) => {
       );
     }
   } catch (error) {
-    console.log(error);
     failedRequest(
       response,
       "Failed To Login",
