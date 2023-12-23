@@ -163,10 +163,7 @@ router.put("/:ListingId", upload.any(), async (request, response) => {
       const newImgurLinks = await Promise.all(imgurUploadPromises);
 
       // Combine the existing image URLs with the new Imgur links
-      const updatedImageUrls = [
-        ...existingListing.imageUrls,
-        ...newImgurLinks,
-      ];
+      const updatedImageUrls = [...existingListing.imageUrls, ...newImgurLinks];
 
       // Update the database with the combined image links and other details
       const updatedListing = await existingListing.update({
@@ -175,8 +172,7 @@ router.put("/:ListingId", upload.any(), async (request, response) => {
         imageUrls: updatedImageUrls,
         price: request.body.price || existingListing.price,
         quantityAvailable:
-          request.body.quantityAvailable ||
-          existingListing.quantityAvailable,
+          request.body.quantityAvailable || existingListing.quantityAvailable,
         brand: request.body.brand || existingListing.brand,
         category: request.body.category || existingListing.category,
         condition: request.body.condition || existingListing.condition,
@@ -191,8 +187,7 @@ router.put("/:ListingId", upload.any(), async (request, response) => {
         description: request.body.description || existingListing.description,
         price: request.body.price || existingListing.price,
         quantityAvailable:
-          request.body.quantityAvailable ||
-          existingListing.quantityAvailable,
+          request.body.quantityAvailable || existingListing.quantityAvailable,
         brand: request.body.brand || existingListing.brand,
         category: request.body.category || existingListing.category,
         condition: request.body.condition || existingListing.condition,
